@@ -2,6 +2,7 @@ package com.example;
 
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
@@ -18,7 +19,8 @@ public class App {
     public static void main(String[] args) {
         System.out.println("Hello World!");
 //        new JobScheduler(zkCenter(), configuration()).init();
-        new JobScheduler(zkCenter(), configurationDataflow()).init();
+//        new JobScheduler(zkCenter(), configurationDataflow()).init();
+        new JobScheduler(zkCenter(), configurationScript()).init();
     }
 
     public static CoordinatorRegistryCenter zkCenter(){
@@ -61,6 +63,26 @@ public class App {
                 .build();
         //job类型配置
         var jtc = new DataflowJobConfiguration(jcc, MyDataflowJob.class.getCanonicalName(), true);
+        //job根的配置（LiteJobConfiguration）
+        var ljc = LiteJobConfiguration
+                .newBuilder(jtc)
+                .overwrite(true)
+                .build();
+
+        return ljc;
+    }
+
+    /**
+     * script-job配置
+     * @return
+     */
+    public static LiteJobConfiguration configurationScript() {
+        //job核心配置
+        var jcc = JobCoreConfiguration
+                .newBuilder("myScriptJob","0/10 * * * * ?",2)
+                .build();
+        //job类型配置
+        var jtc = new ScriptJobConfiguration(jcc, "/Users/keyboardone/IdeaProjects/java-simple-job/test.sh");
         //job根的配置（LiteJobConfiguration）
         var ljc = LiteJobConfiguration
                 .newBuilder(jtc)
