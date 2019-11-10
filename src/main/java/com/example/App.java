@@ -34,7 +34,7 @@ public class App {
     public static LiteJobConfiguration configuration() {
         //job核心配置
         var jcc = JobCoreConfiguration
-                .newBuilder("mySimpleJob","0/2 * * * * ?",2)
+                .newBuilder("mySimpleJob","0/1 * * * * ?",2)
                 .build();
         //job类型配置
         var jtc = new SimpleJobConfiguration(jcc, MySimpleJob.class.getCanonicalName());
